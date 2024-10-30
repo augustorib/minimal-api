@@ -5,7 +5,7 @@ using minimal_api.Infraestrutura.Db;
 
 namespace minimal_api.Dominio.Servicos
 {
-    public class VeiculoService : IVeiculosService
+    public class VeiculoService : IVeiculoService
     {
 
         private readonly DbContexto _context;
@@ -15,7 +15,7 @@ namespace minimal_api.Dominio.Servicos
             _context = context;
         }
 
-        public List<Veiculo> ListAll(int pagina = 1, string? nome = null, string? marca = null)
+        public List<Veiculo> ListAll(int? pagina = 1, string? nome = null, string? marca = null)
         {
             var query = _context.Veiculos.AsQueryable();
 
@@ -26,7 +26,10 @@ namespace minimal_api.Dominio.Servicos
 
             int itensPorPagina = 10;
 
-            query = query.Skip((pagina - 1) * itensPorPagina).Take(itensPorPagina);
+            if(pagina != null)
+            {
+                query = query.Skip(((int)pagina - 1) * itensPorPagina).Take(itensPorPagina);
+            }
 
             return query.ToList();
 

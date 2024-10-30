@@ -3,9 +3,9 @@ using minimal_api.Dominio.Entidades;
 
 namespace minimal_api.Dominio.Interfaces
 {   
-    public interface IVeiculosService
+    public interface IVeiculoService
     {
-        List<Veiculo> ListAll(int pagina = 1, string? nome = null, string? marca = null );
+        List<Veiculo> ListAll(int? pagina = 1, string? nome = null, string? marca = null );
 
         Veiculo? FindById(int id);
 

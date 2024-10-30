@@ -11,7 +11,7 @@ using minimal_api.Infraestrutura.Db;
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddScoped<IAdministradorService, AdministradorService>();
-    builder.Services.AddScoped<IVeiculosService, VeiculoService>();
+    builder.Services.AddScoped<IVeiculoService, VeiculoService>();
 
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -37,7 +37,7 @@ using minimal_api.Infraestrutura.Db;
 #endregion
 
 #region Veiculo
-    app.MapPost("/veiculo", ([FromBody] VeiculoDTO veiculoDTO, IVeiculosService veiculoService) => {
+    app.MapPost("/veiculo", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoService veiculoService) => {
         
         var veiculo = new Veiculo{
             Nome = veiculoDTO.Nome,
@@ -49,6 +49,14 @@ using minimal_api.Infraestrutura.Db;
 
         return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
     });
+
+    app.MapGet("/veiculo", ([FromQuery] int? pagina, IVeiculoService veiculoService) => {
+        
+        var veiculos = veiculoService.ListAll(pagina);
+
+        return Results.Ok(veiculos);
+    });
+
 #endregion
 
 #region App

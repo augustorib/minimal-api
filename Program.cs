@@ -68,6 +68,23 @@ using minimal_api.Infraestrutura.Db;
         
     }).WithTags("Veiculos");
 
+    app.MapPut("/veiculo/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoService veiculoService) => {
+ 
+        var veiculo = veiculoService.FindById(id);
+
+        if(veiculo == null)
+            return Results.NotFound();
+        
+        veiculo.Nome = veiculoDTO.Nome;
+        veiculo.Marca = veiculoDTO.Marca;
+        veiculo.Ano = veiculoDTO.Ano;
+
+        veiculoService.Update(veiculo);
+        
+        return Results.Ok(veiculo);
+
+    }).WithTags("Veiculos");
+
 #endregion
 
 #region App

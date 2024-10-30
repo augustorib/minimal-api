@@ -57,6 +57,17 @@ using minimal_api.Infraestrutura.Db;
         return Results.Ok(veiculos);
     }).WithTags("Veiculos");
 
+    app.MapGet("/veiculo/{id}", ([FromRoute] int id, IVeiculoService veiculoService) => {
+ 
+        var veiculo = veiculoService.FindById(id);
+
+        if(veiculo == null)
+            return Results.NotFound();
+        
+        return Results.Ok(veiculo);
+        
+    }).WithTags("Veiculos");
+
 #endregion
 
 #region App

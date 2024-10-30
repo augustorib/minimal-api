@@ -80,11 +80,23 @@ using minimal_api.Infraestrutura.Db;
         veiculo.Ano = veiculoDTO.Ano;
 
         veiculoService.Update(veiculo);
-        
+
         return Results.Ok(veiculo);
 
     }).WithTags("Veiculos");
 
+    app.MapDelete("/veiculo/{id}", ([FromRoute] int id, IVeiculoService veiculoService) => {
+ 
+        var veiculo = veiculoService.FindById(id);
+
+        if(veiculo == null)
+            return Results.NotFound();
+        
+        veiculoService.Delete(veiculo);
+
+        return Results.NoContent();
+        
+    }).WithTags("Veiculos");
 #endregion
 
 #region App

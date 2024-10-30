@@ -7,7 +7,7 @@ namespace minimal_api.Dominio.DTOs
   
         public string Marca { get; set; } = default!;
 
-        public string Ano { get; set; } = default!;
+        public int Ano { get; set; } = default!;
         
     }
 }

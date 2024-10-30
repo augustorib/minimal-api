@@ -34,11 +34,36 @@ using minimal_api.Infraestrutura.Db;
         else
             return Results.Unauthorized();        
     }).WithTags("Administradores");
+
+
 #endregion
 
 #region Veiculo
+    ErrosDeValidacao ValidaDTO(VeiculoDTO veiculoDTO)
+    {
+        var validacao = new ErrosDeValidacao{
+            Mensagens = new List<string>()
+        };
+
+        if(string.IsNullOrEmpty(veiculoDTO.Nome))
+            validacao.Mensagens.Add("O nome não pode ser vazio");
+
+        if(string.IsNullOrEmpty(veiculoDTO.Marca))
+            validacao.Mensagens.Add("A marca não pode ser vazia");
+
+        if(veiculoDTO.Ano < 1950)
+            validacao.Mensagens.Add("Veículo muito antigo, aceito somente anos superiores de 1950");
+
+        return validacao;
+    }
+
     app.MapPost("/veiculo", ([FromBody] VeiculoDTO veiculoDTO, IVeiculoService veiculoService) => {
-        
+
+        var validacao = ValidaDTO(veiculoDTO);
+
+        if(validacao.Mensagens.Count() > 0)
+            return Results.BadRequest(validacao);
+
         var veiculo = new Veiculo{
             Nome = veiculoDTO.Nome,
             Marca = veiculoDTO.Marca,
@@ -75,6 +100,12 @@ using minimal_api.Infraestrutura.Db;
         if(veiculo == null)
             return Results.NotFound();
         
+        
+        var validacao = ValidaDTO(veiculoDTO);
+
+        if(validacao.Mensagens.Count() > 0)
+            return Results.BadRequest(validacao);
+            
         veiculo.Nome = veiculoDTO.Nome;
         veiculo.Marca = veiculoDTO.Marca;
         veiculo.Ano = veiculoDTO.Ano;

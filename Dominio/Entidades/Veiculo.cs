@@ -20,6 +20,6 @@ namespace minimal_api.Dominio.Entidades
         public string Marca { get; set; } = default!;
 
         [Required]
-        public string Ano { get; set; } = default!;
+        public int Ano { get; set; } = default!;
     }
 }

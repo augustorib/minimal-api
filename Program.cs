@@ -24,16 +24,16 @@ using minimal_api.Infraestrutura.Db;
 #endregion
 
 #region Home
-    app.MapGet("/", () => Results.Json(new Home()));
+    app.MapGet("/", () => Results.Json(new Home())).WithTags("Home");
 #endregion
 
-#region Admniistradores
+#region Admnistradores
     app.MapPost("administradores/login", ([FromBody] LoginDTO loginDTO, IAdministradorService administradorService) => {
         if(administradorService.Login(loginDTO) != null)
             return Results.Ok("Login com sucesso!");
         else
             return Results.Unauthorized();        
-    });
+    }).WithTags("Administradores");
 #endregion
 
 #region Veiculo
@@ -48,14 +48,14 @@ using minimal_api.Infraestrutura.Db;
         veiculoService.Create(veiculo);
 
         return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
-    });
+    }).WithTags("Veiculos");
 
     app.MapGet("/veiculo", ([FromQuery] int? pagina, IVeiculoService veiculoService) => {
         
         var veiculos = veiculoService.ListAll(pagina);
 
         return Results.Ok(veiculos);
-    });
+    }).WithTags("Veiculos");
 
 #endregion
 

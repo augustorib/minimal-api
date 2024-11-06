@@ -13,6 +13,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 #region Builder
 var builder = WebApplication.CreateBuilder(args);
@@ -66,7 +67,6 @@ var builder = WebApplication.CreateBuilder(args);
             }
         });
 
-
     });
 
     builder.Services.AddDbContext<DbContexto>(options => 
@@ -92,7 +92,8 @@ var builder = WebApplication.CreateBuilder(args);
         var claims = new List<Claim>()
         {
             new Claim("Email", administrador.Email),
-            new Claim("Perfil", administrador.Perfil)
+            new Claim("Perfil", administrador.Perfil),
+            new Claim(ClaimTypes.Role, administrador.Perfil)
         };
 
         var token = new JwtSecurityToken(
@@ -136,7 +137,10 @@ var builder = WebApplication.CreateBuilder(args);
         }
 
         return Results.Ok(adms);
-    }).RequireAuthorization().WithTags("Administradores");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm"})
+    .WithTags("Administradores");
 
     app.MapGet("/Administradores/{id}", ([FromRoute] int id, IAdministradorService administradorService) => {
  
@@ -151,7 +155,10 @@ var builder = WebApplication.CreateBuilder(args);
                     Perfil = administrador.Perfil
                 });
         
-    }).RequireAuthorization().WithTags("Administradores");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm"})
+    .WithTags("Administradores");
 
     app.MapPost("administradores/", ([FromBody] AdministradorDTO administradorDTO, IAdministradorService administradorService) => {
         
@@ -185,7 +192,10 @@ var builder = WebApplication.CreateBuilder(args);
                     Perfil = administrador.Perfil
                 });
 
-    }).RequireAuthorization().WithTags("Administradores");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm"})
+    .WithTags("Administradores");
 
 
 #endregion
@@ -225,14 +235,20 @@ var builder = WebApplication.CreateBuilder(args);
         veiculoService.Create(veiculo);
 
         return Results.Created($"/veiculo/{veiculo.Id}", veiculo);
-    }).RequireAuthorization().WithTags("Veiculos");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm, Editor"})
+    .WithTags("Veiculos");
 
     app.MapGet("/veiculo", ([FromQuery] int? pagina, IVeiculoService veiculoService) => {
         
         var veiculos = veiculoService.ListAll(pagina);
 
         return Results.Ok(veiculos);
-    }).RequireAuthorization().WithTags("Veiculos");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm, Editor"})
+    .WithTags("Veiculos");
 
     app.MapGet("/veiculo/{id}", ([FromRoute] int id, IVeiculoService veiculoService) => {
  
@@ -243,7 +259,10 @@ var builder = WebApplication.CreateBuilder(args);
         
         return Results.Ok(veiculo);
         
-    }).RequireAuthorization().WithTags("Veiculos");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm, Editor"})
+    .WithTags("Veiculos");
 
     app.MapPut("/veiculo/{id}", ([FromRoute] int id, VeiculoDTO veiculoDTO, IVeiculoService veiculoService) => {
  
@@ -266,7 +285,10 @@ var builder = WebApplication.CreateBuilder(args);
 
         return Results.Ok(veiculo);
 
-    }).RequireAuthorization().WithTags("Veiculos");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm"})
+    .WithTags("Veiculos");
 
     app.MapDelete("/veiculo/{id}", ([FromRoute] int id, IVeiculoService veiculoService) => {
  
@@ -279,7 +301,10 @@ var builder = WebApplication.CreateBuilder(args);
 
         return Results.NoContent();
         
-    }).RequireAuthorization().WithTags("Veiculos");
+    })
+    .RequireAuthorization()
+    .RequireAuthorization(new AuthorizeAttribute {Roles ="Adm"})
+    .WithTags("Veiculos");
 #endregion
 
 #region App
